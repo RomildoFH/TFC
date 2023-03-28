@@ -5,11 +5,11 @@ FROM node:16.14-alpine
 WORKDIR /app-frontend
 
 # Copiar os package.json e package-lock.json para o container
-COPY packge.json ./
-COPY packge-lock.json ./
+COPY package.json .
+COPY package-lock.json .
 
 # Instalar as dependências Node
-ENTRYPOINT ["npm", "install"]
+RUN npm install
 
 # Copiar o restante dos arquivos da aplicação para o container
 COPY . .
@@ -18,4 +18,6 @@ COPY . .
 EXPOSE 3000
 
 # Configurar os comandos para iniciar a aplicação de acordo com as boas práticas
+ENTRYPOINT [ "npm", "run" ]
+CMD [ "start" ]
 # Dica: Leia a seção Docker e Docker-compose no README para mais informações
