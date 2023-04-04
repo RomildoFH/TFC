@@ -20,9 +20,9 @@ describe('Testes da rota /teams', () => {
 
   let chaiHttpResponse: Response;
 
-  afterEach(()=>{
-    (TeamModel.findAll as sinon.SinonStub).restore();
-  })
+  // afterEach(()=>{
+  //   (TeamModel.findAll as sinon.SinonStub).restore();
+  // })
 
   it('Retorna statusHttp 200, ao realizar requisitção get/teams', async () => {
 
@@ -33,11 +33,21 @@ describe('Testes da rota /teams', () => {
     chaiHttpResponse = await chai
        .request(app).get('/teams');
 
-    expect(chaiHttpResponse.status).to.be('200');
+    expect(chaiHttpResponse.status).to.be.equal(200);
     expect(chaiHttpResponse.body).to.be.deep.equal(TeamsMock);
+
+    (TeamModel.findAll as sinon.SinonStub).restore();
   });
 
-  // it('Seu sub-teste', () => {
-  //   expect(false).to.be.eq(true);
-  // });
+  it('Retorna statusHttp 200 e um objeto com os dados de time específico, ao realizar requisitção get/teams/:id', async () => {
+    
+    sinon
+      .stub(TeamModel, "findByPk")
+      .resolves( TeamsMock[0] as TeamModel);
+
+      const { status, body } = await chai.request(app).get('/teams/1');
+
+    expect(status).to.be.equal(200)
+    expect(body).to.deep.equal(TeamsMock[0])
+  });
 });

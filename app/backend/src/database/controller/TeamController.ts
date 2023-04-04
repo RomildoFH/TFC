@@ -19,4 +19,21 @@ export default class TeamController {
       res.status(500).json({ message: 'Internal Error' });
     }
   };
+
+  public findById = async (
+    req: Request,
+    res: Response,
+  ): Promise<void> => {
+    const { id } = req.params;
+    try {
+      const { type, message } = await this.teamService.findById(id);
+      if (type) {
+        res.status(type).json(message);
+      } else {
+        res.status(200).json(message);
+      }
+    } catch (error) {
+      res.status(500).json({ message: 'Internal error' });
+    }
+  };
 }

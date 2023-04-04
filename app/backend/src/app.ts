@@ -13,6 +13,8 @@ class App {
     const teamService = new TeamService();
     const teamController = new TeamController(teamService);
 
+    this.app.get('/teams/:id', teamController.findById);
+
     this.app.get('/teams', teamController.getAll);
 
     // Não remover essa rota
