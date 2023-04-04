@@ -26,11 +26,9 @@ describe('Testes da rota /teams', () => {
 
   it('Retorna statusHttp 200, ao realizar requisitção get/teams', async () => {
 
-  before(async () => {
     sinon
       .stub(TeamModel, "findAll")
       .resolves( TeamsMock as TeamModel[]);
-  });
 
     chaiHttpResponse = await chai
        .request(app).get('/teams');
