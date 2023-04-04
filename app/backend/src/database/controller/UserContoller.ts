@@ -1,5 +1,10 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
+import * as jwt from 'jsonwebtoken';
+import { SignOptions } from 'jsonwebtoken';
 import UserService from '../service/UserService';
+
+const secret = process.env.JWT_SECRET || 'xablau';
+const configJWT: SignOptions = { algorithm: 'HS256', expiresIn: '1h' };
 
 export default class UserController {
   constructor(private userService: UserService) {}
@@ -7,18 +12,15 @@ export default class UserController {
   public login = async (
     req: Request,
     res: Response,
-    // next: NextFunction
   ) => {
     try {
       const { email, password } = req.body;
-      if (email.length < 1 || password.length < 1) {
-        return res.status(404).json({ message: 'All fields must be filled' });
-      }
       const { type, message } = await this.userService.getByEmail(email, password);
       if (type) {
         return res.status(type).json(message);
       }
-      return res.status(201).json(message);
+      const token = jwt.sign({ email }, secret, configJWT);
+      return res.status(200).json({ token });
     } catch (error) {
       return res.status(500).json({ message: 'Internal Error' });
     }

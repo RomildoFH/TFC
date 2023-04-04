@@ -9,14 +9,14 @@ export default class UserService {
     // const hash = bcrypt.hashSync(password, salt);
     const result = await this.user.findOne({ where: { email } });
     if (!result) {
-      return { type: 404, message: 'Invalid email or password' };
+      return { type: 401, message: 'Invalid email or password' };
     }
 
-    // const isPassword = bcrypt.compareSync(password, result.password);
+    const isPassword = bcrypt.compareSync(password, result.password);
 
-    // if (!isPassword) {
-    //   return { type: 404, message: 'Invalid email or password' };
-    // }
+    if (!isPassword) {
+      return { type: 401, message: 'Invalid email or password' };
+    }
     return { type: null, message: result };
   }
 }

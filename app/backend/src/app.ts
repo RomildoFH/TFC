@@ -3,6 +3,7 @@ import TeamController from './database/controller/TeamController';
 import UserController from './database/controller/UserContoller';
 import TeamService from './database/service/TeamService';
 import UserService from './database/service/UserService';
+import LoginValidate from './middleware/loginValidation';
 
 class App {
   public app: express.Express;
@@ -22,7 +23,7 @@ class App {
     const userService = new UserService();
     const userController = new UserController(userService);
 
-    this.app.post('/login', userController.login);
+    this.app.post('/login', LoginValidate.validateRequest, userController.login);
 
     // Não remover essa rota
     this.app.get('/', (req, res) => res.json({ ok: true }));
