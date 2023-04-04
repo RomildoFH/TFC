@@ -1,6 +1,8 @@
 import * as express from 'express';
 import TeamController from './database/controller/TeamController';
+import UserController from './database/controller/UserContoller';
 import TeamService from './database/service/TeamService';
+import UserService from './database/service/UserService';
 
 class App {
   public app: express.Express;
@@ -16,6 +18,11 @@ class App {
     this.app.get('/teams/:id', teamController.findById);
 
     this.app.get('/teams', teamController.getAll);
+
+    const userService = new UserService();
+    const userController = new UserController(userService);
+
+    this.app.post('/login', userController.login);
 
     // Não remover essa rota
     this.app.get('/', (req, res) => res.json({ ok: true }));
