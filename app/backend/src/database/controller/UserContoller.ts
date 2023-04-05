@@ -17,7 +17,7 @@ export default class UserController {
       const { email, password } = req.body;
       const { type, message } = await this.userService.getByEmail(email, password);
       if (type) {
-        return res.status(type).json(message);
+        return res.status(type).json({ message });
       }
       const token = jwt.sign({ email }, secret, configJWT);
       return res.status(200).json({ token });
