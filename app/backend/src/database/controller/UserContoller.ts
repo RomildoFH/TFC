@@ -1,10 +1,5 @@
 import { Request, Response } from 'express';
-import * as jwt from 'jsonwebtoken';
-import { SignOptions } from 'jsonwebtoken';
 import UserService from '../service/UserService';
-
-const secret = process.env.JWT_SECRET || 'xablau';
-const configJWT: SignOptions = { algorithm: 'HS256', expiresIn: '1h' };
 
 export default class UserController {
   constructor(private userService: UserService) {}
@@ -19,8 +14,20 @@ export default class UserController {
       if (type) {
         return res.status(type).json({ message });
       }
-      const token = jwt.sign({ email }, secret, configJWT);
-      return res.status(200).json({ token });
+      return res.status(200).json({ token: message });
+    } catch (error) {
+      return res.status(500).json({ message: 'Internal Error' });
+    }
+  };
+
+  public getRole = async (
+    req: Request,
+    res: Response,
+  ) => {
+    try {
+      const { email } = req.body.user;
+      const { message } = await this.userService.getRole(email);
+      return res.status(200).json({ role: message });
     } catch (error) {
       return res.status(500).json({ message: 'Internal Error' });
     }
