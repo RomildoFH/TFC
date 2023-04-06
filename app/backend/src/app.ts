@@ -1,6 +1,8 @@
 import * as express from 'express';
+import MatcheController from './database/controller/MatcheController';
 import TeamController from './database/controller/TeamController';
 import UserController from './database/controller/UserContoller';
+import MatcheService from './database/service/MatcheService';
 import TeamService from './database/service/TeamService';
 import UserService from './database/service/UserService';
 import LoginValidate from './middleware/loginValidation';
@@ -26,6 +28,11 @@ class App {
 
     this.app.get('/login/role', TokenValidation.validateToken, userController.getRole);
     this.app.post('/login', LoginValidate.validateRequest, userController.login);
+
+    const matcheService = new MatcheService();
+    const matcheController = new MatcheController(matcheService);
+
+    this.app.get('/matches', matcheController.getAll);
 
     // Não remover essa rota
     this.app.get('/', (req, res) => res.json({ ok: true }));
