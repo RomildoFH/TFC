@@ -10,6 +10,7 @@ import PersonalizedErrors from './Mocks/error.mock';
 import * as Jwt from '../database/utils/JWT.functions';
 import MatcheModel from '../database/models/Matches';
 import MatcheMocks from './Mocks/matche.mock';
+import UserMocks from './Mocks/user.mock';
 
 chai.use(chaiHttp);
 
@@ -75,3 +76,55 @@ describe('Testes da rota /matche', () => {
     expect(chaiHttpResponse.body).to.be.deep.equal(PersonalizedErrors.internal);
   });
 });
+
+describe('Testes da rota matches/:id/finish', () => {
+
+  afterEach(() => {
+    sinon.restore();
+  });
+
+  let chaiHttpResponse: Response;
+
+  it('Ao realizar requisição sem um token informado, recebe statusHttp 401 e a mensagem "Token not found"', async () => {
+    
+    chaiHttpResponse = await chai
+      .request(app)
+      .patch('/matches/2/finish')
+      .set('authorization', '');
+  
+    expect(chaiHttpResponse.status).to.be.equal(401);
+    expect(chaiHttpResponse.body).to.be.deep.equal(PersonalizedErrors.tokenNotFound);
+  });
+
+  it('Ao realizar requisição sem um token invalido, recebe statusHttp 401 e a mensagem "Token must be a valid token"', async () => {
+    
+    chaiHttpResponse = await chai
+      .request(app)
+      .patch('/matches/2/finish')
+      .set('authorization', UserMocks.InvalidToken);
+  
+    expect(chaiHttpResponse.status).to.be.equal(401);
+    expect(chaiHttpResponse.body).to.be.deep.equal(PersonalizedErrors.mustBeToken);
+  });
+
+  it('retorna statusHttp 200 e a mensagem "Finished" ao realizar requisição com dados válidos', async () => {
+    const token = UserMocks.TokenMock();
+    
+    sinon
+      .stub(MatcheModel, "update")
+      .resolves([1]);
+    
+    sinon
+      .stub(Jwt, "verifyToken")
+      .returns(UserMocks.TokenDecoded);
+
+      chaiHttpResponse = await chai
+      .request(app)
+      .patch('/matches/2/finish')
+      .set('authorization', token);  
+  
+    expect(chaiHttpResponse.status).to.be.equal(200);
+    expect(chaiHttpResponse.body).to.be.deep.equal(MatcheMocks.CorrectReturn);
+  });
+});
+

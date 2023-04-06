@@ -24,6 +24,21 @@ export default class MatcheController {
       return res.status(500).json({ message: 'Internal Error' });
     }
   };
+
+  public finishMatche = async (
+    req: Request,
+    res: Response,
+  ) => {
+    try {
+      const { id } = req.params;
+      const { type } = await this.matcheService.finishMatche(Number(id));
+      if (!type) {
+        return res.status(200).json({ message: 'Finished' });
+      }
+    } catch (error) {
+      return res.status(500).json({ message: 'Internal Error' });
+    }
+  };
 }
 
 //

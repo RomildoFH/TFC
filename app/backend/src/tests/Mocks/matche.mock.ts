@@ -14,7 +14,7 @@ const AllMatches = [
     }
   },
   {
-    id: 41,
+    id: 2,
     homeTeamId: 16,
     homeTeamGoals: 2,
     awayTeamId: 9,
@@ -29,6 +29,8 @@ const AllMatches = [
   }
 ];
 
+const CorrectReturn = { message: "Finished" };
+
 const MatcheInProgress = [AllMatches[1]];
 
 const MatcheFinished = [AllMatches[0]];
@@ -37,6 +39,7 @@ const MatcheMocks = {
   AllMatches,
   MatcheInProgress,
   MatcheFinished,
+  CorrectReturn,
 }
 
 export default MatcheMocks;

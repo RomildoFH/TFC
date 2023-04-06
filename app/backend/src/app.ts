@@ -1,12 +1,7 @@
 import * as express from 'express';
-import MatcheController from './database/controller/MatcheController';
-import TeamController from './database/controller/TeamController';
-import UserController from './database/controller/UserContoller';
-import MatcheService from './database/service/MatcheService';
-import TeamService from './database/service/TeamService';
-import UserService from './database/service/UserService';
-import LoginValidate from './middleware/loginValidation';
-import TokenValidation from './middleware/tokenValidation';
+import userRouter from './routes/login.router';
+import matcheRouter from './routes/matche.router';
+import teamRouter from './routes/team.router';
 
 class App {
   public app: express.Express;
@@ -15,24 +10,6 @@ class App {
     this.app = express();
 
     this.config();
-
-    const teamService = new TeamService();
-    const teamController = new TeamController(teamService);
-
-    this.app.get('/teams/:id', teamController.findById);
-
-    this.app.get('/teams', teamController.getAll);
-
-    const userService = new UserService();
-    const userController = new UserController(userService);
-
-    this.app.get('/login/role', TokenValidation.validateToken, userController.getRole);
-    this.app.post('/login', LoginValidate.validateRequest, userController.login);
-
-    const matcheService = new MatcheService();
-    const matcheController = new MatcheController(matcheService);
-
-    this.app.get('/matches', matcheController.getAll);
 
     // Não remover essa rota
     this.app.get('/', (req, res) => res.json({ ok: true }));
@@ -48,6 +25,32 @@ class App {
 
     this.app.use(express.json());
     this.app.use(accessControl);
+    // const teamService = new TeamService();
+    // const teamController = new TeamController(teamService);
+
+    // this.app.get('/teams/:id', teamController.findById);
+
+    // this.app.get('/teams', teamController.getAll);
+
+    // const userService = new UserService();
+    // const userController = new UserController(userService);
+
+    // this.app.get('/login/role', TokenValidation.validateToken, userController.getRole);
+    // this.app.post('/login', LoginValidate.validateRequest, userController.login);
+
+    // const matcheService = new MatcheService();
+    // const matcheController = new MatcheController(matcheService);
+
+    // this.app.patch(
+    //   '/matches/:id/finish',
+    //   TokenValidation.validateToken,
+    //   matcheController.finishMatche,
+    // );
+    // this.app.get('/matches', matcheController.getAll);
+
+    this.app.use('/login', userRouter);
+    this.app.use('/teams', teamRouter);
+    this.app.use('/matches', matcheRouter);
   }
 
   public start(PORT: string | number):void {

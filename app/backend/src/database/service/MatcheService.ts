@@ -1,3 +1,4 @@
+// import { ResultSetHeader } from 'mysql2';
 import Matche from '../models/Matches';
 import Team from '../models/Team';
 
@@ -21,5 +22,13 @@ export default class MatcheService {
       ] });
 
     return ({ type: null, message: search });
+  }
+
+  public async finishMatche(id: number) {
+    const result = await this.matche.update(
+      { inProgress: false },
+      { where: { id } },
+    );
+    return ({ type: null, message: result[0] });
   }
 }
