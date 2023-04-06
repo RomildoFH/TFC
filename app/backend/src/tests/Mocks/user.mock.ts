@@ -1,3 +1,5 @@
+import { createJWT } from "../../database/utils/JWT.functions";
+
 const UserReturn = {
   id: 1,
   username: 'Admin',
@@ -41,8 +43,26 @@ const RequestWrongPass = {
   password: 'not_secret_admin'
 };
 
-const TokenMock = { token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJBZG1pbiIsImVtYWlsIjoiYWRtaW5AYWRtaW4uY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNjgwNzc3MTg3LCJleHAiOjE2ODA4NjM1ODd9.UgjsSJazMyfVQJBEtgEQypRCUxunAg-nSChrjGP-VXw' };
+const TokenMock = () => {
+  return createJWT({
+    id: 1,
+    username: 'Admin',
+    role: 'admin',
+    email: 'admin@admin.com',
+  });
+};
 
-const UserMocks = { UserReturn, UserRequest, TokenMock, RequestWithoutEmail, RequestWithoutPass, RequestInvalidEmail, RequestInvalidPass, RequestWrongEmail, RequestWrongPass };
+const InvalidToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJBZG1pbiIsImVtYWlsIjoiYWRtaW5AYWRtaW4uY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNjgwNzM2MzcxLCJleHAiOjE2ODA4MjI3NzF9.d9CZAU8qfIvPRni6GygFgnJM65grx8M8csE6hFcdBUk'
+
+const TokenDecoded = {
+  "id": 1,
+  "username": "Admin",
+  "email": "admin@admin.com",
+  "role": "admin",
+  "iat": 1680736371,
+  "exp": 1680822771
+};
+
+const UserMocks = { UserReturn, UserRequest, TokenMock, RequestWithoutEmail, RequestWithoutPass, RequestInvalidEmail, RequestInvalidPass, RequestWrongEmail, RequestWrongPass, TokenDecoded, InvalidToken };
 
 export default UserMocks;

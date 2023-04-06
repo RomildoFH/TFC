@@ -26,10 +26,10 @@ export default class UserService {
 
   public async getRole(email:string) {
     const search = await this.user.findOne({ where: { email } });
-    if (!search) {
-      return { type: 401, message: 'User not found' };
-    }
-    const { role } = search;
+    // if (!search) {
+    //   return { type: 401, message: 'User not found' };
+    // }
+    const { role } = search as User;
     return { type: null, message: role };
   }
 }
