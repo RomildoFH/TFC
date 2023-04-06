@@ -25,28 +25,28 @@ class App {
 
     this.app.use(express.json());
     this.app.use(accessControl);
-    // const teamService = new TeamService();
-    // const teamController = new TeamController(teamService);
+    /* const teamService = new TeamService();
+    const teamController = new TeamController(teamService);
 
-    // this.app.get('/teams/:id', teamController.findById);
+    this.app.get('/teams/:id', teamController.findById);
 
-    // this.app.get('/teams', teamController.getAll);
+    this.app.get('/teams', teamController.getAll);
 
-    // const userService = new UserService();
-    // const userController = new UserController(userService);
+    const userService = new UserService();
+    const userController = new UserController(userService);
 
-    // this.app.get('/login/role', TokenValidation.validateToken, userController.getRole);
-    // this.app.post('/login', LoginValidate.validateRequest, userController.login);
+    this.app.get('/login/role', TokenValidation.validateToken, userController.getRole);
+    this.app.post('/login', LoginValidate.validateRequest, userController.login);
 
-    // const matcheService = new MatcheService();
-    // const matcheController = new MatcheController(matcheService);
+    const matcheService = new MatcheService();
+    const matcheController = new MatcheController(matcheService);
 
-    // this.app.patch(
-    //   '/matches/:id/finish',
-    //   TokenValidation.validateToken,
-    //   matcheController.finishMatche,
-    // );
-    // this.app.get('/matches', matcheController.getAll);
+    this.app.patch(
+      '/matches/:id/finish',
+      TokenValidation.validateToken,
+      matcheController.finishMatche,
+    );
+    this.app.get('/matches', matcheController.getAll); */
 
     this.app.use('/login', userRouter);
     this.app.use('/teams', teamRouter);
