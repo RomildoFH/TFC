@@ -9,7 +9,16 @@ export default class MatcheController {
     res: Response,
   ) => {
     try {
-      const { message } = await this.matcheService.getAll();
+      const { inProgress } = req.query;
+      if (inProgress === undefined) {
+        const { message } = await this.matcheService.getAll();
+        return res.status(200).json(message);
+      }
+      if (inProgress === 'true') {
+        const { message } = await this.matcheService.getAllFiltred(true);
+        return res.status(200).json(message);
+      }
+      const { message } = await this.matcheService.getAllFiltred(false);
       return res.status(200).json(message);
     } catch (error) {
       return res.status(500).json({ message: 'Internal Error' });

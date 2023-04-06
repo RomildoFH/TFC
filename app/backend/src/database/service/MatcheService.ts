@@ -12,4 +12,14 @@ export default class MatcheService {
 
     return ({ type: null, message: search });
   }
+
+  public async getAllFiltred(inProgress: boolean) {
+    const search = await this.matche.findAll({ where: { inProgress },
+      include: [
+        { model: Team, as: 'homeTeam' },
+        { model: Team, as: 'awayTeam' },
+      ] });
+
+    return ({ type: null, message: search });
+  }
 }
