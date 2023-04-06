@@ -11,8 +11,38 @@ const UserRequest = {
   password: 'secret_admin'
 };
 
+const RequestWithoutEmail = {
+  email: '',
+  password: 'secret_admin'
+}
+
+const RequestWithoutPass = {
+  email: 'admin@admin.com',
+  password: ''
+};
+
+const RequestInvalidEmail = {
+  email: '@admin.com',
+  password: 'secret_admin'
+};
+
+const RequestInvalidPass = {
+  email: 'admin@admin.com',
+  password: 'sec'
+};
+
+const RequestWrongEmail = {
+  email: 'adminnn@admin.com',
+  password: 'secret_admin'
+};
+
+const RequestWrongPass = {
+  email: 'admin@admin.com',
+  password: 'not_secret_admin'
+};
+
 const TokenMock = { token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJBZG1pbiIsImVtYWlsIjoiYWRtaW5AYWRtaW4uY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNjgwNzc3MTg3LCJleHAiOjE2ODA4NjM1ODd9.UgjsSJazMyfVQJBEtgEQypRCUxunAg-nSChrjGP-VXw' };
 
-const UserMocks = { UserReturn, UserRequest, TokenMock };
+const UserMocks = { UserReturn, UserRequest, TokenMock, RequestWithoutEmail, RequestWithoutPass, RequestInvalidEmail, RequestInvalidPass, RequestWrongEmail, RequestWrongPass };
 
 export default UserMocks;
