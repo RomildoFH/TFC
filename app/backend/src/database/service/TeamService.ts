@@ -9,7 +9,7 @@ export default class TeamService {
   }
 
   public async findById(id: string) {
-    const result = await this.team.findByPk(id);
+    const result = await this.team.findOne({ where: { id } });
     if (!result) {
       return { type: 404, message: 'Team not found' };
     }
