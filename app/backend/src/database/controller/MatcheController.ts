@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import MatcheService from '../service/MatcheService';
+import PersonalizedErrors from '../../tests/Mocks/error.mock';
 
 export default class MatcheController {
   constructor(private matcheService: MatcheService) {}
@@ -21,7 +22,7 @@ export default class MatcheController {
       const { message } = await this.matcheService.getAllFiltred(false);
       return res.status(200).json(message);
     } catch (error) {
-      return res.status(500).json({ message: 'Internal Error' });
+      return res.status(500).json(PersonalizedErrors.internal);
     }
   };
 
@@ -36,7 +37,22 @@ export default class MatcheController {
         return res.status(200).json({ message: 'Finished' });
       }
     } catch (error) {
-      return res.status(500).json({ message: 'Internal Error' });
+      return res.status(500).json(PersonalizedErrors.internal);
+    }
+  };
+
+  public updateMatche = async (
+    req: Request,
+    res: Response,
+  ) => {
+    try {
+      const { id } = req.params;
+      const { homeTeamGoals, awayTeamGoals } = req.body;
+      const { message } = await this.matcheService
+        .updateMatche(Number(id), homeTeamGoals, awayTeamGoals);
+      return res.status(200).json({ affectedRows: message });
+    } catch (error) {
+      return res.status(500).json(PersonalizedErrors.internal);
     }
   };
 }

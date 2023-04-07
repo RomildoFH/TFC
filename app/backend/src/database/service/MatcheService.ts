@@ -31,4 +31,12 @@ export default class MatcheService {
     );
     return ({ type: null, message: result[0] });
   }
+
+  public async updateMatche(id: number, homeTeamGoals: number, awayTeamGoals: number) {
+    const result = await this.matche.update(
+      { homeTeamGoals, awayTeamGoals },
+      { where: { id } },
+    );
+    return ({ type: null, message: result[0] });
+  }
 }

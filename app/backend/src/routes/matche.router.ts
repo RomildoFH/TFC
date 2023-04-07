@@ -8,6 +8,7 @@ const matcheService = new MatcheService();
 const matcheController = new MatcheController(matcheService);
 
 matcheRouter.patch('/:id/finish', TokenValidation.validateToken, matcheController.finishMatche);
+matcheRouter.patch('/:id', TokenValidation.validateToken, matcheController.updateMatche);
 matcheRouter.get('/', matcheController.getAll);
 
 export default matcheRouter;
