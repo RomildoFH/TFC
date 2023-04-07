@@ -16,4 +16,16 @@ export default class LeaderBoardController {
       return res.status(500).json(PersonalizedErrors.internal);
     }
   };
+
+  public getAllAway = async (
+    req: Request,
+    res: Response,
+  ) => {
+    try {
+      const { message } = await this.leaderBoardService.getAllAway();
+      return res.status(200).json(message);
+    } catch (error) {
+      return res.status(500).json(PersonalizedErrors.internal);
+    }
+  };
 }

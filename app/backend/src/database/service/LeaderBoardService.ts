@@ -1,6 +1,7 @@
 import Matche from '../models/Matches';
 import Team from '../models/Team';
-import PerformaceCalculate from '../utils/LeaderBoardCalc';
+import AwayPerformaceCalculate from '../utils/AwayBoardCalc';
+import HomePerformaceCalculate from '../utils/HomeBoardCalc';
 
 export default class LeaderBoardService {
   constructor(private matcheModel = Matche, private teamModel = Team) {}
@@ -13,13 +14,34 @@ export default class LeaderBoardService {
       const filtredMatches = matches.filter((matche) => matche.homeTeamId === team.id);
       const teamBoard = {
         name: team.teamName,
-        totalPoints: PerformaceCalculate.totalPoints(filtredMatches),
-        totalGames: PerformaceCalculate.totalGames(filtredMatches),
-        totalVictories: PerformaceCalculate.totalVictories(filtredMatches),
-        totalDraws: PerformaceCalculate.totalDraws(filtredMatches),
-        totalLosses: PerformaceCalculate.totalLosses(filtredMatches),
-        goalsFavor: PerformaceCalculate.goalsFavor(filtredMatches),
-        goalsOwn: PerformaceCalculate.goalsOwn(filtredMatches),
+        totalPoints: HomePerformaceCalculate.totalPoints(filtredMatches),
+        totalGames: HomePerformaceCalculate.totalGames(filtredMatches),
+        totalVictories: HomePerformaceCalculate.totalVictories(filtredMatches),
+        totalDraws: HomePerformaceCalculate.totalDraws(filtredMatches),
+        totalLosses: HomePerformaceCalculate.totalLosses(filtredMatches),
+        goalsFavor: HomePerformaceCalculate.goalsFavor(filtredMatches),
+        goalsOwn: HomePerformaceCalculate.goalsOwn(filtredMatches),
+      };
+      return teamBoard;
+    });
+    return { type: null, message: homeBoard };
+  }
+
+  public async getAllAway() {
+    const teams = await this.teamModel.findAll();
+    const matches = await this.matcheModel.findAll({ where: { inProgress: false } });
+
+    const homeBoard = teams.map((team) => {
+      const filtredMatches = matches.filter((matche) => matche.homeTeamId === team.id);
+      const teamBoard = {
+        name: team.teamName,
+        totalPoints: AwayPerformaceCalculate.totalPoints(filtredMatches),
+        totalGames: AwayPerformaceCalculate.totalGames(filtredMatches),
+        totalVictories: AwayPerformaceCalculate.totalVictories(filtredMatches),
+        totalDraws: AwayPerformaceCalculate.totalDraws(filtredMatches),
+        totalLosses: AwayPerformaceCalculate.totalLosses(filtredMatches),
+        goalsFavor: AwayPerformaceCalculate.goalsFavor(filtredMatches),
+        goalsOwn: AwayPerformaceCalculate.goalsOwn(filtredMatches),
       };
       return teamBoard;
     });

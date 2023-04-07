@@ -1,6 +1,6 @@
 import Matche from '../models/Matches';
 
-export default class PerformaceCalculate {
+export default class HomePerformaceCalculate {
   public static totalPoints(matches: Matche[]) {
     const totalPoints = matches.reduce((acc: number, curr: Matche) => {
       let points = 0;
