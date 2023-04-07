@@ -39,4 +39,16 @@ export default class MatcheService {
     );
     return ({ type: null, message: result[0] });
   }
+
+  public async createMatche(
+    homeTeamId: number,
+    awayTeamId: number,
+    homeTeamGoals: number,
+    awayTeamGoals: number,
+  ) {
+    const query = await this.matche.create(
+      { homeTeamId, awayTeamId, homeTeamGoals, awayTeamGoals, inProgress: true },
+    );
+    return { type: null, message: query };
+  }
 }

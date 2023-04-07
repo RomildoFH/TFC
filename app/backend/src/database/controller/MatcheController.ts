@@ -32,10 +32,8 @@ export default class MatcheController {
   ) => {
     try {
       const { id } = req.params;
-      const { type } = await this.matcheService.finishMatche(Number(id));
-      if (!type) {
-        return res.status(200).json({ message: 'Finished' });
-      }
+      await this.matcheService.finishMatche(Number(id)); // pode implementar condição para avaliar se nenhuma linha foi alterada, sendo o retorno = 0;
+      return res.status(200).json({ message: 'Finished' });
     } catch (error) {
       return res.status(500).json(PersonalizedErrors.internal);
     }
@@ -51,6 +49,24 @@ export default class MatcheController {
       const { message } = await this.matcheService
         .updateMatche(Number(id), homeTeamGoals, awayTeamGoals);
       return res.status(200).json({ affectedRows: message });
+    } catch (error) {
+      return res.status(500).json(PersonalizedErrors.internal);
+    }
+  };
+
+  public createMatche = async (
+    req: Request,
+    res: Response,
+  ) => {
+    try {
+      const { homeTeamId, awayTeamId, homeTeamGoals, awayTeamGoals } = req.body;
+      const { message } = await this.matcheService.createMatche(
+        homeTeamId,
+        awayTeamId,
+        homeTeamGoals,
+        awayTeamGoals,
+      );
+      return res.status(201).json(message);
     } catch (error) {
       return res.status(500).json(PersonalizedErrors.internal);
     }

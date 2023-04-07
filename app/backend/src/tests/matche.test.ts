@@ -63,7 +63,7 @@ describe('Testes da rota /matche', () => {
     expect(chaiHttpResponse.body).to.be.deep.equal(MatcheMocks.MatcheFinished);
   });
 
-  it('retorna statusHttp 500 ao fazer uam requisição do tipo get/matches e falhar', async () => {
+  it('retorna statusHttp 500 ao fazer uma requisição do tipo get/matches e falhar', async () => {
     sinon
       .stub(MatcheModel, "findAll")
       .throws(new Error('Sorry'));
@@ -74,6 +74,18 @@ describe('Testes da rota /matche', () => {
   
     expect(chaiHttpResponse.status).to.be.equal(500);
     expect(chaiHttpResponse.body).to.be.deep.equal(PersonalizedErrors.internal);
+  });
+
+  it('retorna statusHttp 201 ao realizar cadastro de uma nova partida em andamento', async () => {
+    const token = UserMocks.TokenMock();
+
+    sinon
+      .stub(Jwt, "verifyToken")
+      .resolves(UserMocks.TokenDecoded);
+
+    sinon
+      .stub(MatcheModel, "create")
+      .resolves();
   });
 });
 
@@ -126,5 +138,101 @@ describe('Testes da rota matches/:id/finish', () => {
     expect(chaiHttpResponse.status).to.be.equal(200);
     expect(chaiHttpResponse.body).to.be.deep.equal(MatcheMocks.CorrectReturn);
   });
+
+  it('retorna statusHttp 500 e a mensagem "Internal Error" ao realizar requisição com dados válidos, mas falhar', async () => {
+    const token = UserMocks.TokenMock();
+    
+    sinon
+      .stub(MatcheModel, "update")
+      .throws(new Error('Sorry'));
+    
+    sinon
+      .stub(Jwt, "verifyToken")
+      .returns(UserMocks.TokenDecoded);
+
+      chaiHttpResponse = await chai
+      .request(app)
+      .patch('/matches/2/finish')
+      .set('authorization', token);  
+  
+    expect(chaiHttpResponse.status).to.be.equal(500);
+    expect(chaiHttpResponse.body).to.be.deep.equal(PersonalizedErrors.internal);
+  });
+});
+
+describe('Testes da rota /matche/:id', () => {
+
+  afterEach(() => {
+    sinon.restore();
+  });
+
+  let chaiHttpResponse: Response;
+
+  it('Ao realizar requisição sem um token informado, recebe statusHttp 401 e a mensagem "Token not found"', async () => {
+  
+    chaiHttpResponse = await chai
+      .request(app)
+      .patch('/matches/2')
+      .set('authorization', '');
+  
+    expect(chaiHttpResponse.status).to.be.equal(401);
+    expect(chaiHttpResponse.body).to.be.deep.equal(PersonalizedErrors.tokenNotFound);
+  });
+
+  it('Ao realizar requisição sem um token invalido, recebe statusHttp 401 e a mensagem "Token must be a valid token"', async () => {
+    
+    chaiHttpResponse = await chai
+      .request(app)
+      .patch('/matches/2')
+      .set('authorization', UserMocks.InvalidToken);
+  
+    expect(chaiHttpResponse.status).to.be.equal(401);
+    expect(chaiHttpResponse.body).to.be.deep.equal(PersonalizedErrors.mustBeToken);
+  });
+
+  it('retorna statusHttp 500 e a mensagem "Internal Error" ao realizar requisição com dados válidos, mas falhar', async () => {
+    const token = UserMocks.TokenMock();
+    
+    sinon
+      .stub(MatcheModel, "update")
+      .throws(new Error('Sorry'));
+    
+    sinon
+      .stub(Jwt, "verifyToken")
+      .returns(UserMocks.TokenDecoded);
+
+      chaiHttpResponse = await chai
+      .request(app)
+      .patch('/matches/2')
+      .set('authorization', token);  
+  
+    expect(chaiHttpResponse.status).to.be.equal(500);
+    expect(chaiHttpResponse.body).to.be.deep.equal(PersonalizedErrors.internal);
+  });
+
+  it('retorna statusHttp 200 e a mensagem "affectedRows: 1" ao realizar requisição com dados válidos, e ter êxito', async () => {
+    const token = UserMocks.TokenMock();
+    
+    sinon
+      .stub(MatcheModel, "update")
+      .resolves([1]);
+    
+    sinon
+      .stub(Jwt, "verifyToken")
+      .returns(UserMocks.TokenDecoded);
+
+      chaiHttpResponse = await chai
+      .request(app)
+      .patch('/matches/2')
+      .send({
+        "homeTeamGoals": 3,
+        "awayTeamGoals": 1
+      })
+      .set('authorization', token);  
+  
+    expect(chaiHttpResponse.status).to.be.equal(200);
+    expect(chaiHttpResponse.body).to.be.deep.equal({ affectedRows: 1 });
+  });
+
 });
 
