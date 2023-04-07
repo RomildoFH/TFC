@@ -35,11 +35,45 @@ const MatcheInProgress = [AllMatches[1]];
 
 const MatcheFinished = [AllMatches[0]];
 
+const NewMatche = {
+  id: 99,
+  homeTeamId: 1,
+  awayTeamId: 2,
+  homeTeamGoals: 7,
+  awayTeamGoals: 2,
+  inProgress: true
+};
+
+const NewMatcheRequest = {
+  homeTeamId: 1,
+  awayTeamId: 2,
+  homeTeamGoals: 2,
+  awayTeamGoals: 2,
+}
+
+const MatcheRequestEqualTeams = {
+  homeTeamId: 2,
+  awayTeamId: 2,
+  homeTeamGoals: 2,
+  awayTeamGoals: 2,
+}
+
+const MatcheRequestWrongTeams = {
+  homeTeamId: 99,
+  awayTeamId: 2,
+  homeTeamGoals: 2,
+  awayTeamGoals: 2,
+}
+
 const MatcheMocks = {
   AllMatches,
   MatcheInProgress,
   MatcheFinished,
   CorrectReturn,
+  NewMatche,
+  NewMatcheRequest,
+  MatcheRequestEqualTeams,
+  MatcheRequestWrongTeams,
 }
 
 export default MatcheMocks;

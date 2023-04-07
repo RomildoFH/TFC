@@ -11,6 +11,8 @@ import * as Jwt from '../database/utils/JWT.functions';
 import MatcheModel from '../database/models/Matches';
 import MatcheMocks from './Mocks/matche.mock';
 import UserMocks from './Mocks/user.mock';
+import TeamModel from '../database/models/Team';
+import teamsMock from './Mocks/team.mock';
 
 chai.use(chaiHttp);
 
@@ -84,8 +86,55 @@ describe('Testes da rota /matche', () => {
       .resolves(UserMocks.TokenDecoded);
 
     sinon
+      .stub(TeamModel, "findAll")
+      .resolves(teamsMock as TeamModel[]);
+
+    sinon
       .stub(MatcheModel, "create")
-      .resolves();
+      .resolves(MatcheMocks.NewMatche as MatcheModel);
+
+    chaiHttpResponse = await chai
+      .request(app)
+      .post('/matches')
+      .send(MatcheMocks.NewMatcheRequest)
+      .set('authorization', token)
+    
+    expect(chaiHttpResponse.status).to.be.equal(201);
+    expect(chaiHttpResponse.body).to.be.deep.equal(MatcheMocks.NewMatche)
+  });
+
+  it('retorna statusHttp 422 ao realizar cadastro de uma nova partida com dois times iguais', async () => {
+    const token = UserMocks.TokenMock();
+
+    sinon
+      .stub(Jwt, "verifyToken")
+      .resolves(UserMocks.TokenDecoded);
+
+    chaiHttpResponse = await chai
+      .request(app)
+      .post('/matches')
+      .send(MatcheMocks.MatcheRequestEqualTeams)
+      .set('authorization', token)
+    
+    expect(chaiHttpResponse.status).to.be.equal(422);
+    expect(chaiHttpResponse.body).to.be.deep.equal(PersonalizedErrors.matcheEqualTeams);
+  });
+
+  it('retorna statusHttp 404 ao realizar cadastro de uma nova partida com time não cadastrado', async () => {
+    const token = UserMocks.TokenMock();
+
+    sinon
+      .stub(Jwt, "verifyToken")
+      .resolves(UserMocks.TokenDecoded);
+
+    chaiHttpResponse = await chai
+      .request(app)
+      .post('/matches')
+      .send(MatcheMocks.MatcheRequestWrongTeams)
+      .set('authorization', token)
+    
+    expect(chaiHttpResponse.status).to.be.equal(404);
+    expect(chaiHttpResponse.body).to.be.deep.equal(PersonalizedErrors.matcheNotTeam);
   });
 });
 
