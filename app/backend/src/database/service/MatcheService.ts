@@ -46,6 +46,11 @@ export default class MatcheService {
     homeTeamGoals: number,
     awayTeamGoals: number,
   ) {
+    const allTeams = await Team.findAll();
+    const allTeamsIds = allTeams.map((team) => team.id);
+    if (!allTeamsIds.includes(homeTeamId) || !allTeamsIds.includes(awayTeamId)) {
+      return { type: 404, message: 'There is no team with such id!' };
+    }
     const query = await this.matche.create(
       { homeTeamId, awayTeamId, homeTeamGoals, awayTeamGoals, inProgress: true },
     );

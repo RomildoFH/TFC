@@ -60,13 +60,16 @@ export default class MatcheController {
   ) => {
     try {
       const { homeTeamId, awayTeamId, homeTeamGoals, awayTeamGoals } = req.body;
-      const { message } = await this.matcheService.createMatche(
+      const { type, message } = await this.matcheService.createMatche(
         homeTeamId,
         awayTeamId,
         homeTeamGoals,
         awayTeamGoals,
       );
-      return res.status(201).json(message);
+      if (!type) {
+        return res.status(201).json(message);
+      }
+      return res.status(type).json({ message });
     } catch (error) {
       return res.status(500).json(PersonalizedErrors.internal);
     }

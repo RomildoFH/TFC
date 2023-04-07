@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import TeamsValidation from '../middleware/teamsValidation';
 import MatcheController from '../database/controller/MatcheController';
 import MatcheService from '../database/service/MatcheService';
 import TokenValidation from '../middleware/tokenValidation';
@@ -9,7 +10,12 @@ const matcheController = new MatcheController(matcheService);
 
 matcheRouter.patch('/:id/finish', TokenValidation.validateToken, matcheController.finishMatche);
 matcheRouter.patch('/:id', TokenValidation.validateToken, matcheController.updateMatche);
-matcheRouter.post('/', TokenValidation.validateToken, matcheController.createMatche);
+matcheRouter.post(
+  '/',
+  TokenValidation.validateToken,
+  TeamsValidation.matcheValidation,
+  matcheController.createMatche,
+);
 matcheRouter.get('/', matcheController.getAll);
 
 export default matcheRouter;
