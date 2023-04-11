@@ -33,4 +33,17 @@ export default class LeaderBoardController {
       return res.status(500).json(PersonalizedErrors.internal);
     }
   };
+
+  public getAll = async (
+    req: Request,
+    res: Response,
+  ) => {
+    try {
+      const { message } = await this.leaderBoardService.getAll();
+      // const orderedResults = Organizer.DefaultOrder(message);
+      return res.status(200).json(message);
+    } catch (error) {
+      return res.status(500).json({ error });
+    }
+  };
 }

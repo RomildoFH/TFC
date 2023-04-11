@@ -1,3 +1,4 @@
+import ITeamBoard from '../interfaces/ITeamBoard';
 import Matche from '../models/Matches';
 import Team from '../models/Team';
 import AwayPerformaceCalculate from '../utils/AwayBoardCalc';
@@ -48,5 +49,27 @@ export default class LeaderBoardService {
       });
     });
     return { type: null, message: awayBoard };
+  }
+
+  public async getAll() {
+    const homeBoard = await (this.getAllHome());
+    const awayBoard = await (this.getAllAway());
+    const board = [...homeBoard.message, ...awayBoard.message];
+
+    const leaderBoard: ITeamBoard[] = [];
+
+    for (let index = 0; index < board.length; index += 1) {
+      const current = board[index];
+      if (!leaderBoard.some((boardTeam) => boardTeam.name === current.name)) {
+        for (let count = 0; count < board.length; count += 1) {
+          const next = board[count];
+          if (current.name === next.name && index !== count) {
+            current.totalPoints += next.totalPoints;
+          }
+        }
+        leaderBoard.push(current);
+      }
+    }
+    return { type: null, message: leaderBoard };
   }
 }

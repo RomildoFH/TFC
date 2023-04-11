@@ -8,5 +8,6 @@ const leaderController = new LeaderBoardController(leaderService);
 
 leaderRouter.get('/home', leaderController.getAllHome);
 leaderRouter.get('/away', leaderController.getAllAway);
+leaderRouter.get('/', leaderController.getAll);
 
 export default leaderRouter;
