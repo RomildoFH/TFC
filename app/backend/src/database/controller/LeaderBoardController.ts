@@ -13,9 +13,8 @@ export default class LeaderBoardController {
   ) => {
     try {
       const { message } = await this.leaderBoardService.getAllHome();
-      console.log('a');
       // const ordered = sortObjectArrByProps(message, ['totalPoints']);
-      const orderedResults = Organizer.OrderByProps(message);
+      const orderedResults = Organizer.DefaultOrder(message);
       return res.status(200).json(orderedResults);
     } catch (error) {
       return res.status(500).json(PersonalizedErrors.internal);
@@ -28,7 +27,8 @@ export default class LeaderBoardController {
   ) => {
     try {
       const { message } = await this.leaderBoardService.getAllAway();
-      return res.status(200).json(message);
+      const orderedResults = Organizer.DefaultOrder(message);
+      return res.status(200).json(orderedResults);
     } catch (error) {
       return res.status(500).json(PersonalizedErrors.internal);
     }

@@ -32,9 +32,9 @@ export default class LeaderBoardService {
     const teams = await this.teamModel.findAll();
     const matches = await this.matcheModel.findAll({ where: { inProgress: false } });
 
-    const homeBoard = teams.map((team) => {
-      const filtredMatches = matches.filter((matche) => matche.homeTeamId === team.id);
-      const teamBoard = {
+    const awayBoard = teams.map((team) => {
+      const filtredMatches = matches.filter((matche) => matche.awayTeamId === team.id);
+      return ({
         name: team.teamName,
         totalPoints: AwayPerformaceCalculate.totalPoints(filtredMatches),
         totalGames: AwayPerformaceCalculate.totalGames(filtredMatches),
@@ -43,9 +43,10 @@ export default class LeaderBoardService {
         totalLosses: AwayPerformaceCalculate.totalLosses(filtredMatches),
         goalsFavor: AwayPerformaceCalculate.goalsFavor(filtredMatches),
         goalsOwn: AwayPerformaceCalculate.goalsOwn(filtredMatches),
-      };
-      return teamBoard;
+        goalsBalance: AwayPerformaceCalculate.goalsBalance(filtredMatches),
+        efficiency: AwayPerformaceCalculate.efficiency(filtredMatches),
+      });
     });
-    return { type: null, message: homeBoard };
+    return { type: null, message: awayBoard };
   }
 }
