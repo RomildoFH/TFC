@@ -12,7 +12,7 @@ export default class LeaderBoardService {
 
     const homeBoard = teams.map((team) => {
       const filtredMatches = matches.filter((matche) => matche.homeTeamId === team.id);
-      const teamBoard = {
+      return ({
         name: team.teamName,
         totalPoints: HomePerformaceCalculate.totalPoints(filtredMatches),
         totalGames: HomePerformaceCalculate.totalGames(filtredMatches),
@@ -21,8 +21,9 @@ export default class LeaderBoardService {
         totalLosses: HomePerformaceCalculate.totalLosses(filtredMatches),
         goalsFavor: HomePerformaceCalculate.goalsFavor(filtredMatches),
         goalsOwn: HomePerformaceCalculate.goalsOwn(filtredMatches),
-      };
-      return teamBoard;
+        goalsBalance: HomePerformaceCalculate.goalsBalance(filtredMatches),
+        efficiency: HomePerformaceCalculate.efficiency(filtredMatches),
+      });
     });
     return { type: null, message: homeBoard };
   }

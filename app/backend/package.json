@@ -52,6 +52,7 @@
     "typescript": "4.4.4"
   },
   "dependencies": {
+    "@nighly/sort-object-array-by-property": "^1.4.9",
     "bcryptjs": "2.4.3",
     "cors": "2.8.5",
     "dotenv": "10.0.0",

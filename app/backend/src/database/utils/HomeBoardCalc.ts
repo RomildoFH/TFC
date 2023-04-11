@@ -73,4 +73,19 @@ export default class HomePerformaceCalculate {
     }, 0);
     return goalsOwn;
   }
+
+  public static goalsBalance(matches: Matche[]) {
+    const goalsFavor = this.goalsFavor(matches);
+    const goalsOwn = this.goalsOwn(matches);
+
+    return goalsFavor - goalsOwn;
+  }
+
+  public static efficiency(matches: Matche[]) {
+    const totalGames = this.totalGames(matches);
+    const totalPoints = this.totalPoints(matches);
+    const efficiency = ((totalPoints / (totalGames * 3)) * 100).toFixed(2);
+
+    return efficiency;
+  }
 }
