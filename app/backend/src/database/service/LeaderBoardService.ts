@@ -1,4 +1,3 @@
-import ITeamBoard from '../interfaces/ITeamBoard';
 import Matche from '../models/Matches';
 import Team from '../models/Team';
 import ABC from '../utils/AwayBoardCalc';
