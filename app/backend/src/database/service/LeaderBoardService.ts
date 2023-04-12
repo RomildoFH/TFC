@@ -1,8 +1,15 @@
 import ITeamBoard from '../interfaces/ITeamBoard';
 import Matche from '../models/Matches';
 import Team from '../models/Team';
-import AwayPerformaceCalculate from '../utils/AwayBoardCalc';
-import HomePerformaceCalculate from '../utils/HomeBoardCalc';
+import ABC from '../utils/AwayBoardCalc';
+import HBC from '../utils/HomeBoardCalc';
+
+// const sumFunction = (curr: ITeamBoard, next: ITeamBoard) => {
+
+// }
+
+const ef = (awayGames: number, homeGames: number, awayPoints: number, homePoints: number) =>
+  (((awayPoints + homePoints) / ((awayGames + homeGames) * 3)) * 100);
 
 export default class LeaderBoardService {
   constructor(private matcheModel = Matche, private teamModel = Team) {}
@@ -15,15 +22,15 @@ export default class LeaderBoardService {
       const filtredMatches = matches.filter((matche) => matche.homeTeamId === team.id);
       return ({
         name: team.teamName,
-        totalPoints: HomePerformaceCalculate.totalPoints(filtredMatches),
-        totalGames: HomePerformaceCalculate.totalGames(filtredMatches),
-        totalVictories: HomePerformaceCalculate.totalVictories(filtredMatches),
-        totalDraws: HomePerformaceCalculate.totalDraws(filtredMatches),
-        totalLosses: HomePerformaceCalculate.totalLosses(filtredMatches),
-        goalsFavor: HomePerformaceCalculate.goalsFavor(filtredMatches),
-        goalsOwn: HomePerformaceCalculate.goalsOwn(filtredMatches),
-        goalsBalance: HomePerformaceCalculate.goalsBalance(filtredMatches),
-        efficiency: HomePerformaceCalculate.efficiency(filtredMatches),
+        totalPoints: HBC.tPoints(filtredMatches),
+        totalGames: HBC.tGames(filtredMatches),
+        totalVictories: HBC.totalVictories(filtredMatches),
+        totalDraws: HBC.totalDraws(filtredMatches),
+        totalLosses: HBC.totalLosses(filtredMatches),
+        goalsFavor: HBC.goalsFavor(filtredMatches),
+        goalsOwn: HBC.goalsOwn(filtredMatches),
+        goalsBalance: HBC.goalsBalance(filtredMatches),
+        efficiency: HBC.efficiency(filtredMatches).toFixed(2),
       });
     });
     return { type: null, message: homeBoard };
@@ -37,39 +44,43 @@ export default class LeaderBoardService {
       const filtredMatches = matches.filter((matche) => matche.awayTeamId === team.id);
       return ({
         name: team.teamName,
-        totalPoints: AwayPerformaceCalculate.totalPoints(filtredMatches),
-        totalGames: AwayPerformaceCalculate.totalGames(filtredMatches),
-        totalVictories: AwayPerformaceCalculate.totalVictories(filtredMatches),
-        totalDraws: AwayPerformaceCalculate.totalDraws(filtredMatches),
-        totalLosses: AwayPerformaceCalculate.totalLosses(filtredMatches),
-        goalsFavor: AwayPerformaceCalculate.goalsFavor(filtredMatches),
-        goalsOwn: AwayPerformaceCalculate.goalsOwn(filtredMatches),
-        goalsBalance: AwayPerformaceCalculate.goalsBalance(filtredMatches),
-        efficiency: AwayPerformaceCalculate.efficiency(filtredMatches),
+        totalPoints: ABC.tPoints(filtredMatches),
+        totalGames: ABC.tGames(filtredMatches),
+        totalVictories: ABC.totalVictories(filtredMatches),
+        totalDraws: ABC.totalDraws(filtredMatches),
+        totalLosses: ABC.totalLosses(filtredMatches),
+        goalsFavor: ABC.goalsFavor(filtredMatches),
+        goalsOwn: ABC.goalsOwn(filtredMatches),
+        goalsBalance: ABC.goalsBalance(filtredMatches),
+        efficiency: ABC.efficiency(filtredMatches).toFixed(2),
       });
     });
     return { type: null, message: awayBoard };
   }
 
+  public async test() {
+    const teams = await this.teamModel.findAll();
+    const matches = await this.matcheModel.findAll({ where: { inProgress: false } });
+    return teams.map((team) => {
+      const fA = matches.filter((matche) => matche.awayTeamId === team.id);
+      const fH = matches.filter((matche) => matche.homeTeamId === team.id);
+      return ({
+        name: team.teamName,
+        totalPoints: ABC.tPoints(fA) + HBC.tPoints(fH),
+        totalGames: ABC.tGames(fA) + HBC.tGames(fH),
+        totalVictories: ABC.totalVictories(fA) + HBC.totalVictories(fH),
+        totalDraws: ABC.totalDraws(fA) + HBC.totalDraws(fH),
+        totalLosses: ABC.totalLosses(fA) + HBC.totalLosses(fH),
+        goalsFavor: ABC.goalsFavor(fA) + HBC.goalsFavor(fH),
+        goalsOwn: ABC.goalsOwn(fA) + HBC.goalsOwn(fH),
+        goalsBalance: ABC.goalsBalance(fA) + HBC.goalsBalance(fH),
+        efficiency: ef(ABC.tGames(fA), HBC.tGames(fH), ABC.tPoints(fA), HBC.tPoints(fH)).toFixed(2),
+      });
+    });
+  }
+
   public async getAll() {
-    const homeBoard = await (this.getAllHome());
-    const awayBoard = await (this.getAllAway());
-    const board = [...homeBoard.message, ...awayBoard.message];
-
-    const leaderBoard: ITeamBoard[] = [];
-
-    for (let index = 0; index < board.length; index += 1) {
-      const current = board[index];
-      if (!leaderBoard.some((boardTeam) => boardTeam.name === current.name)) {
-        for (let count = 0; count < board.length; count += 1) {
-          const next = board[count];
-          if (current.name === next.name && index !== count) {
-            current.totalPoints += next.totalPoints;
-          }
-        }
-        leaderBoard.push(current);
-      }
-    }
-    return { type: null, message: leaderBoard };
+    const result = await this.test();
+    return { type: null, message: result };
   }
 }

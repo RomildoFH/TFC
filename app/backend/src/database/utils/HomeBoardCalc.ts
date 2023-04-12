@@ -1,8 +1,8 @@
 import Matche from '../models/Matches';
 
 export default class HomePerformaceCalculate {
-  public static totalPoints(matches: Matche[]) {
-    const totalPoints = matches.reduce((acc: number, curr: Matche) => {
+  public static tPoints(matches: Matche[]) {
+    const tPoints = matches.reduce((acc: number, curr: Matche) => {
       let points = 0;
       if (curr.homeTeamGoals > curr.awayTeamGoals) {
         points += 3;
@@ -12,10 +12,10 @@ export default class HomePerformaceCalculate {
       }
       return acc + points;
     }, 0);
-    return totalPoints;
+    return tPoints;
   }
 
-  public static totalGames(matches: Matche[]) {
+  public static tGames(matches: Matche[]) {
     return matches.length;
   }
 
@@ -82,9 +82,9 @@ export default class HomePerformaceCalculate {
   }
 
   public static efficiency(matches: Matche[]) {
-    const totalGames = this.totalGames(matches);
-    const totalPoints = this.totalPoints(matches);
-    const efficiency = ((totalPoints / (totalGames * 3)) * 100).toFixed(2);
+    const tGames = this.tGames(matches);
+    const tPoints = this.tPoints(matches);
+    const efficiency = ((tPoints / (tGames * 3)) * 100);
 
     return efficiency;
   }
